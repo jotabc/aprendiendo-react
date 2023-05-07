@@ -1,0 +1,143 @@
+!!! REACT !!!.-
+// página web comunidad => reactjs.wiki
+React es una biblioteca js para construir interfaces de usuario. Está pensado para pensado para crear interfaces de usuario independientemente de donde sea.
+React se usa en diff sitios porque es agnostico de la plataforma, porque esta dividido en 2 paquetes React la librería y ReactDOM que es lo que es específico del navegador. React es universal, esto quiere decir que React se puede ejecutar tanto en el servidor como el cliente, esto hace que nuestra app, en lugar de tener código en el servidor y el cliente lo que hace esto es que podemos reutilizar el mismo código de esta forma escribimos nuestra app una sola vez.
+
+Dos cosas importantes:
+1) React es declarativo, que nos permite crear estás interfaces de una forma mucha más sencilla.
+
+2) Está basado en componentes.
+
+Trabaja con JS por debajo, JS nos sirve para poder agregarle interactividad a nuestra página web. Con vanilla JS nuestro cóodigo es inperativo. Inperativo significa que le estamos diciendo el como lo tiene que hacer, oye recupera este botón, oye escucha el evento del boton, oye busca el id etc etc. Estamos describiendo como hacerlo una serie de instrucciones de como lo tiene que hacer.
+Con React nuestro código se vuelve declarativo, es decir le vamos a describir lo que quiero que haga. El código imperativo no es escalable si no que tenemos que tener un código repetitivo, se hace grande para pequeñas cosas. Con React podemos usar compartir la misma lógica, componentes etc.
+
+EJM React sin instalarlo
+
+index.html
+<div className='app'></div>
+
+import ReactDOM from 'https://esm.sh/react-dom@18.2.0/client'
+
+// Recuperamos el elemento dom app de nuestro index.html
+const appDomElement = document.getElementById('app')
+
+// creamos el root con el elemento recuperado del DOM de aquí parte toda nuestra app.
+const root = ReactDOM.createRoot(appDomElement)
+
+// Reenderizamos nuestro componente principal que parte la app.
+root.render(<ComponentReact />)
+
+En este ejm vemos que no se reenderiza el html, porque en React debemos de crear ese elemento para que pille que es un elemento html.
+Debemos de importat React y crear ese button.
+
+import React from 'https://esm.sh/react-dom@18.2.0/client'
+// creamos nuestro elemento
+const button = React.createElement('button', null, 'Me gusta')
+const button = React.createElement('button', {'data-id': 123}, 'Me gusta')
+
+Para crear un elemento en react necesitamos 3 parámetros, el elemento a crear en este caso 'button', 2do objeto con propiedades que queremos que tenga nuestro elemento, 3ero sería lo que queremos que tenga ese elemento en este xaso Me gusta.
+Si queremos reenderizar más de un botton no podeos reenderizar más de un elemento a la vez, si no solo un único elemento. Puede ser un elemento que tenga 10 elementos mas por ejm.
+
+const button2 = React.createElement('button', null, 'Me gusta')
+const button3 = React.createElement('button', null, 'Me gusta')
+
+const div = React.createElement('div', null, [button, button2, button3]
+const div = React.createElement(React.Fragment, null, [button, button2, button3] // Esto nos ayuda a no crear un nivel más en el html, osea crear un div sin necesidad.
+
+root.render(div)
+Aún sigue siendo imperativo nuestro código. Para que nuestro código sea declarativo, debemos de usar JSX, que es lenguaje, una extension de JS xml, en la que nosotros describimos la interfaz que queremos crear.
+
+el mismo ejm con JSX>
+<React.Fragment>
+    <button>Button 1</button>
+    <button>Button 2</button>
+    <button>Button 3</button>
+</React.Fragment>
+El que se encraga de hacer este tipo de transformaciones es SWC o babel, lo que hacen es trasnpilador de código donde nosotros escribimos JS y lo que hace es transformarlo, son herraminetos que usan por debajo Webpack, nextjs etc. Hoy en día la mas moderna es SWC
+JSX no es html, es js mismo que se trasnformará en código entendible gracias a los traspiladores de código. Debemos de tener en cuenta en JSX:
+
+1) Expresiones.- Podemos colocar expresiones dentro de jsx ejm
+  ejm <div>hola, {name}</div>
+
+2) evita la inyección de código.
+
+Para poder trabajar con React, vamos a usar un empaquetador de apps wweb, tenemos diff alternatova como Create React App que usa webpack, es la forma oficial para cxrear nuestra app de react, es un poco lenta y se ha quedado atrás. Tenemos Vite que es mucho mejor más rápido es compatible con otras alternatovas JS.
+
+//reenderizar elementos
+root.render(button)
+
+! CREANDO UN MONOREPOSITORIO MULTIPAQUETE!
+1) Iniciamos el proyecto con pnpm init, este nos crear un package.json
+
+2)Cremos una carpeta con cualquier nombre en este caso projects.
+
+3) En la carpeta projects lanzamos el comando para crear una app de React con:
+  - pnpm create vite@latest
+
+4) Aquí entramos a la carepta y lanzamos pnpm install.
+
+Este proceso de crear el proyecto con Vite se repetirá cada vex que hagamos y queremos crear un nuevo proyecto React. El multipaquete será nuestra package.json que compartira dependencias en todos lo proyectos que queremos con su respectiva config que veremos más adelante.
+
+! COMPONENTE !.- Un componenten es una función que lo que hace es crear un elemento. Nos permite reutilizar el código en nuestra app.
+Este recibe un nombre la primera con mayúscula. Así nuestro código será declarativo. Es decir PascalCase, es la única forma de que React reenderice y reconozca que sea un componente a un elemento html.
+Los estilos tenemos 3 formas:
+1) inline.- Aquí los estilos se colocan como objeto no como JS en strings ejm
+  <button style={{ width: '100px', maxWidth: '100vw' }}></button> y en CamelCase
+
+2) Hojas de estilo.- Creamos la hoja de estilo y la importamos
+
+style.css
+...
+
+Component
+import 'styles.css'
+
+3) Através de clases.- Debemos de pasarle className no class como siempre porque como vimos SWC transforma a js el JSX entonces class es una palabra reservada.
+
+  <button className='avatar-card'></button>
+
+Pero en React podemo usar otras alternativas para estilos, como Tailwind, Chakra UI, css modules, Reactstrap, Bootstrap etc etc.
+
+Para que un Component de React sea reutilizzble los importante es el paso de props, es decir, las propiedades que le pasamos al componente para que sea reutilizable como por ejm username, que puede ser que cada card tenga un diff username, colores, etc etc
+
+Cual es la diff entre un component y un elemento..?.- Un component es una factoria de elementos, es decir un component es una función que al ejecutarla devuelve un elemento.
+
+Un elemento es lo que reenderiza React.
+Cuando pasamos una prop a componentes está siempre tiene que ser inmutable siempre, no debe de modificarse nunca porque así evitamos que React tenga la seguiridad de lo que está reenderizando.
+Las props tambien pueden tener valores por defecto para que si por a o b motivo no se pase el username por ejm siempre tenga un valor por defecto.
+Podemos también aunque no es una buena práctica pasarle todas las props de golpe como un único objeto ejm =>
+
+const jonnathan = {isFollowing: false, username: 'jota'}
+const juan = {isFollowing: true, username: 'juan'}
+
+<TwitterFollowCard {...jonnathan}>
+    Jonnathan Baculima
+</TwitterFollowCard>
+
+<TwitterFollowCard {...juan}>
+    Juan Peralta
+</TwitterFollowCard>
+Obviamnete los parámetros deben ser los mismo dentro del objeto al pasarle.
+
+!ESTADO!.- Un estado es básico para que nuestro componente tenga vida, cuando el estado cambia queremos por ejm que cambie la UI, o la interfaz tenga algo más o distinto a lo que tenía.
+
+useState.- El useState tiene un array de dos posiciones, donde el primer estado es el valor, y el segundo es una funcion o la forma de actualizar el estado ejm
+
+// forma larga
+const state = useState()
+const isFollowing = state[0]
+const setIsFollowing = state[1]
+
+// forma corta
+const [isFollowing, setIsFollowing] = useState(false)
+
+Los estados son siempre internos, es decir a nivel de cada elemento.
+Cada vez que cambiamos el estado en React, se refleja el estado en la UI.
+React tiene un VirtualDOM, este es una copia de l UI que tiene al principio creando un arbol de elementos, entonces como tiene la copia lo que hace React al rereenderizar el componente es comparar que cambio de lo que tenía en el VirtualDOM (copia) y el DOM, el solo renderiza o cambia solo lo que ha cambiado en este VirtualDOM nada más. OSea solo cambia las partes que han cambiado.
+
+Otra forma de rerenderizarse un componente es cuando un component padre se vuelva a rerenderizar y propague los cambios hacía abajo.
+Si un componente padre cambia los componentes hijos siempre se van a rerenderizar siempre, hayan o no cambiado las props de los hijos.
+
+Entonces asi los componentes hijos no cambien sus props y si el componente padre cambia pues siempre se rerenderizar el component pero en los hijos que se rerenderizo no cambia el DOM aunque se actualice. El DOM sigue intacto. Podemos usar props también para inicializar un estado.
+Tener cuidado al inicializar un estado en React, siempre siempre se inicializa una vez.
+
