@@ -141,3 +141,6 @@ Si un componente padre cambia los componentes hijos siempre se van a rerenderiza
 Entonces asi los componentes hijos no cambien sus props y si el componente padre cambia pues siempre se rerenderizar el component pero en los hijos que se rerenderizo no cambia el DOM aunque se actualice. El DOM sigue intacto. Podemos usar props también para inicializar un estado.
 Tener cuidado al inicializar un estado en React, siempre siempre se inicializa una vez.
 
+Siempre es buena práctica limpiar la subscripción a eventos en los useEffect, porque siempre se seguirá ejecutando dicho evento.
+
+Una forma de mirar en la consola que eventos se están reenderizando siempre sería en la consola del navehador lanzar los siguiente => getEventListeners(window) esto nos dara un objeto con información de lo que está ocurriendo que evento se está ejecutando cuantas veces se ejecutó etc. pero solo funciona en Chromium.
