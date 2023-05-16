@@ -1,13 +1,13 @@
-import { useState } from "react"
+import { useState } from 'react'
 import confetti from 'canvas-confetti'
-import { Square } from "components/Square"
-import { WinnerModal } from "components/WinnerModal"
-import { Board } from "components/Board"
-import { TURNS } from "./constants"
-import { checkEndGame, checkWinnerFrom } from "logic/board"
-import { resetGameStorage, saveGameToStorage } from "logic/storage"
+import { Square } from 'components/Square'
+import { WinnerModal } from 'components/WinnerModal'
+import { Board } from 'components/Board'
+import { TURNS } from './constants'
+import { checkEndGame, checkWinnerFrom } from 'logic/board'
+import { resetGameStorage, saveGameToStorage } from 'logic/storage'
 
-function App() {
+function App () {
   const [winner, setWinner] = useState(null)
   const [board, setBoard] = useState(() => {
     const boardFromStorage = window.localStorage.getItem('board')
@@ -42,7 +42,7 @@ function App() {
       board: newBoard,
       newTurn
     })
-    //revisar si hay ganador
+    // revisar si hay ganador
     const newWinner = checkWinnerFrom(newBoard)
     if (newWinner) {
       confetti()
@@ -61,7 +61,7 @@ function App() {
         updateBoard={updateBoard}
       />
       {/* TURNS */}
-      <section className="turn">
+      <section className='turn'>
         <Square isSelected={turn === TURNS.X}>
           {TURNS.X}
         </Square>
