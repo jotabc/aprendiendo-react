@@ -1,0 +1,65 @@
+!!! Iniciar un proyecto sin template React con Vite !!!
+
+Para esto podemos nosotros iniciar un poryecto JS con vite.
+  pnpm create vite@latest
+
+- Luego instalamos las dependencias de React
+  * pnpm add react react-dom -E
+  react es la librería, mientras react-dom tiene los bandings del navegador.
+
+- Luego debemos de instalar el plugin de react con Vite.
+  * pnpm add @vitejs/plugin-react
+
+- Creamos la configuracion de Vite.
+  // vite.config.js
+  import { defineConfig } from 'vite'
+    import react from '@vitejs/plugin-react'
+
+    export default defineConfig({
+        plugins: [react()]
+    })
+
+- Creamos el main.jsx para React.
+  // main.jsx
+
+Importante en nuestro index.html debemos de enlazar nuestro main.jsx punto de entrada para que pueda leer y mostrarnos el punto de inicio.
+También debemos de cambiar la extension de js a jsx porque el plugin de vite no está aún preparado para transpilar el código.
+
+El catch en el fetch entra directamente si ha habido un error con la peticion no con la respuesta, por eso si usamos fetch podemos hacer un throw new Error para que entre directo en la respuesta y la petición 
+if (!res.ok) throw new Error('No se ha podido recuperar la imagen')
+
+!CUSTOM HOOKS!.- Los custom hooks con nada más que una función que puede usar los hooks de react dentro, sirve para la reutilización de lógica en nuestros componentes. Siempre siempre el custom hook tiene que devolver algo puede ser si dado caso en un fetch puede devolver el estado principal cargado con la información que obtuvo de esa petición.
+No puede estar dento de un if, while, no puede cambiar su posición si no siempre dentro de un componente, la diff entre una función y un customHook es que en la función no podemos usar otros hooks de React, en cmabio en los hooks is podemos usar los hooks de React dentro.
+
+// EJM
+
+function useCatImage ({ fact }) {
+  const [imgUrl, setImgUrl] = useState(null)
+
+  useEffect(() => {
+    if (!fact) return
+
+    const threeFirstWords = fact.split(' ', 1).join(' ')
+    fetch(`https://cataas.com/cat/says/${threeFirstWords}?size=50&color=red&json=true`)
+      .then(res => res.json())
+      .then(data => {
+        const { url } = data
+        setImgUrl(url)
+      })
+  }, [fact])
+
+  return { imgUrl }
+}
+
+Porque pasamos como objeto el parametro fact a nuestro hook..?.- Es una buena práctica dn general en JS, se trata de la extendibilidad de nuestros hooks o funciones en general, siempre vamos a uqerer que nuestras funciones estén preparadas para que se puedan extender facilmente. Usando el objeto lo que nos asegura que el nombre fact en este caso sea obligado el mismo nombre fact, es extensible porque independientemente del orden en que vengan llamados más parámetros no importa.
+
+podemos pasar ({ fact, color, size }) y recibir ({ fact, size, color }) el resultado es el mismo no importa el orden.
+
+!!! TESTING CON PLAYWRIGHT !!!
+- pnpm create playwright@latest => con esto iniciamos debemos seguir los pasos que nos indica la terminal para instalarlo.
+
+test/name_test debemos de realizar el test ver ejm.
+
+- npx playwright test => con esto ejecutamos el test.
+
+Si queremos usar nosotros EM6 imports debemos de cambiar la extension del archivo playwright.config.js por playwright.config.cjs que significa de js a commom js.
