@@ -1,0 +1,20 @@
+{
+  "name": "05-movies-search",
+  "private": true,
+  "version": "0.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "devDependencies": {
+    "vite": "^4.3.2"
+  },
+  "dependencies": {
+    "@vitejs/plugin-react-swc": "3.3.1",
+    "just-debounce-it": "3.2.0",
+    "react": "18.2.0",
+    "react-dom": "18.2.0"
+  }
+}

@@ -1,0 +1,203 @@
+useRef.- Es un hook que nos permite crear una referencia mutable que persiste durante todo el ciclo de vida del componente, es muy útil para guardar cualquier valor que podamos mutar como un id, un elemnto del DOM y que cada vez que cambia no vuelva a reenderizar el componente. El useRef no dispara el cambio del componente. Periste quiere decir que su valor no es reiniciado entre reenderizados. Osea si colocamos un contador count++ con el useRef si se sumará uno a ese valor 1 2 3 4 5 etc, pero aunque el valor cambie no se reenderizará el componente, en cambio con el useState let i = 0 i++, el valor seguirá siendo 1 siempre 1 1 1 1 y a¿cuando ese valor se genera de nuevo ese valor hace que le componente se reenderice.
+
+Esa el a diff con el useState, porque el useState cuando si valor cambia este rerenderiza el componente donde se usa en cambio el useRef así cambie su valor no rereenderiza el componente.
+También es muy útil para guardar referencias del dom, porque va a persistir esa referencia va a obtener una vez ese elemnto y siempre que queremos usar ese elemento del DOM en nuestro componente lo podemos utilizar.
+
+!!! FORMAS NO CONTROLADA !!!.-
+
+  const inputRef = useRef()
+  const handleSubmit = (e) => {
+    e.preventDefault()
+    const { query } = Object.fromEntries(new FormData(e.target))
+    console.log(query)
+  }
+
+// nativo FormData podemos usarlo si tenemos muchos inputs recuperamos uno por uno
+	const handleSubmit = (e) => {
+    e.preventDefault()
+    const fields = new FormData(e.target)
+    const query = fields.get('query')
+    console.log(query)
+  }
+
+// nativo FormData podemos usarlo si tenemos muchos inputs recuperamos todos de golpe
+ const handleSubmit = (e) => {
+    e.preventDefault()
+    const fields = Object.fromEntries(new FormData(e.target))
+    console.log(fields)
+  }
+
+Esta es una forma de controlar los forms de una forma no controlada con el useRef o con los eventos nativos del DOM, es como la mejor práctica en sí, porque es más sencilla y la forma más óptima.
+
+Otro concepto de forma controlada, es que React va a controlar que es lo que se escribe en nuestros inputs, cuando vamos a validarlo etc gracias al estado, con esto tendremos el control del input.
+La desventaja es que es mucho más lento porque cada vez que cambia el input vamos a tener un nuevi render, si nuestra app es compleja nuestros inputs serían lentos. La ventaja es a la hora de validar el formulario y tener el código un poquito más recogido.
+Con la forma controlada podemos validar el form con un effect ejm:
+
+  - creamos un estado error
+
+  - creamos el useEffect con los posibles errores que puedan suceder
+  useEffect(() => {
+    if (query === '') {
+      setError('No se puede buscar una película vacía')
+      return
+    }
+
+    if (query.match(/^\d+$/)) {
+      setError('No se puede buscar una película con un número')
+      return
+    }
+
+    if (query.length > 3) {
+      setError('La búsqueda debe tener al menos 3 carácteres')
+    }
+
+    setError(null)
+  }, [query])
+
+  o podemos usarlo directamente en el handleChange porque cada vez que cambia el onChange se ejecuta lo que está dentro
+	const handleChange = (e) => {
+    const newQuery = e.target.value
+
+    setQuery(e.target.value)
+
+    if (newQuery === '') {
+      setError('No se puede buscar una película vacía')
+      return
+    }
+
+    if (newQuery.match(/^\d+$/)) {
+      setError('No se puede buscar una película con un número')
+      return
+    }
+
+    if (newQuery.length < 3) {
+      setError('La búsqueda debe tener al menos 3 carácteres')
+      return
+    }
+
+    setError(null)
+  }
+
+		Porque el input tiene el onChange event y podemos pasarle ahi la funcion <input onChange={handleChange} value={query} /> 
+
+  - usamos ese estado para colocar en el input el error debajo sería una buena opción, o debajo del form.
+  <input ... />
+  {error && <span>{error}</span>}
+
+	Con la forma controlada podemos nosotros incluso evitar cambiar el estado si no queremos nosotros que se ejecute o cambie el estado si no cumple una condición el input dentro.
+
+Otro forma de usar y buena práctica de uso con el useRef es, podemos tener una banderita, osea para saber si el usuario o no a terminado de hacer funcionar el input, para que solo cuando el usuario use el input puedan salir errores busqueda etc etc. ========> ejm
+
+const firstInputRef = useRef(true)
+
+useEffect(() => {
+    if (firstInputRef.current) {
+      firstInputRef.current = search === ''
+      return
+    }
+		...
+}
+
+Podemos verificar si el componente se reenderizo por primera vez, o cosas por el estilo.
+
+Por ejm tenemos un hook X y hacemos una variable let fuera de la función para usar para tener una referencia del estado anterior que tenía 
+
+let previousSearch = ''
+
+function useMovies(){
+  ...
+  const [search, setSearch] = useState('')
+
+  try {
+    ...
+    previousSearch = search
+
+    // actualización del estado
+    const newMovies = await searchMovies({ search })
+      setMovies(newMovies)
+  }
+}
+
+Esto funciona porque, porque estamos usando el customHook una vez, esto sisgnifica que los modulos en js son instancias únicas (singleton) y por lo tanto esta variable se va a compartir donde importemos el hook, entonces si importamos o usamos el customHook en varios componentes, este let por fuera del componente tendría siempre el mismo valor y no sería buena práctica. A no ser que sea algo clarisimo y sea o necesite el mismo valor en todos lados lo hariamos, si no se evita. Porque queremos que nuestro customHook tiene que funcionar sin ese let.
+
+Una mejor práctica es usar un useRef =======> EJM.
+
+function useMovies(){
+  ...
+  const [search, setSearch] = useState('')
+  const previousSearch = useRef()
+
+  try {
+    ...
+    previousSearch.current = search
+
+    // actualización del estado
+    const newMovies = await searchMovies({ search })
+      setMovies(newMovies)
+  }
+}
+
+Mejor práctica por que el useRef es algo interno del hook, asi donde se use lo va a tener de forma interna.
+
+! useMemo !.- El cuerpo de un componente o un hook es el render, por lo que cada vez que cambie se vuelve a ejecutar por ejm si tenemos 3 funciones, y ejecutamos solo 1 igual las tres se volverán a crear, por lo que debemos de nosotros analizar y no hacer la recreación de cualquier función por ejm en un hook estamos haciendo un input search y un input checkbox, y nosotros estamos creando una función que me haga un sorted de la películas por título, sortedMovies, entonces si nosotros vemos aún cuando se escribe en el input esta función sortedMovies se volvio a reenderizar una y otra vez según se escribe en el input, no es lo más optimo y está mal porque si tenemos miles de películas tendríamos trabajo demás.
+
+Para solucionar esto tenemos un hook de React llamado useMemo, que lo que hace es memorizar un valor, para no tener que volverlo a calcular dependiendo de una lista de dependencias.
+No se debe usar siempre solo cuando tenemos un problema de reendimiento en nuestra app.
+El useMemo puede devolver un valor o una función
+
+ejm ===> retorn valor
+const sortedMovies = useMemo(() => {
+    return sort
+      ? [...movies].sort((a, b) => a.title.localeCompare(b.title))
+      : movies
+  }, [sort, movies])
+
+ejm ===> retorn function
+const getMovies = useMemo(() => {
+    return async ({ search }) => {
+      if (search === previousSearch.current) return
+
+      try {
+        setLoading(true)
+        setError(null)
+        previousSearch.current = search
+        const newMovies = await searchMovies({ search })
+        setMovies(newMovies)
+      } catch (e) {
+        setError(e.message)
+      } finally {
+        setLoading(false)
+      }
+
+    /* searchMovies({ search })
+      .then((movies) => setMovies(movies)) */
+    }
+  }, [search])
+
+! useCallback !.- Existe otro hook de React que e useCallback que es lo mismo que hace useMemo pero este nos ayuda mucho más en la funcoines, como vimos podemos usar un memo para memorizar funciones, pero el useCallback es la mejor solución, nos ayuda a simplificar un poco el código, porque ahora en vez de retorna una funcion como hacíamos en el useMemo, en el useCallback podemos nosotros pasarle la función directa.
+
+const getMovies = useCallback(async () => {
+    if (search === previousSearch.current) return
+    try {
+      setLoading(true)
+      setError(null)
+      previousSearch.current = search
+      const newMovies = await searchMovies({ search })
+      setMovies(newMovies)
+    } catch (e) {
+      setError(e.message)
+    } finally {
+      setLoading(false)
+    }
+
+    /* searchMovies({ search })
+      .then((movies) => setMovies(movies)) */
+  }, [search])
+
+  Es exactamente igual que lo que hace useMemo, useCallback usa por debajo useMemo, la diff única es que useCallback está pensada para funciones y nos ayuda un poco en la sintaxis nada más lo único de ahí son lo mismo. useMemo memoriza un valor cualquiera o lo que sea y useCallback memoriza una función.
+
+
+NOTA.-
+  - Para crear una grid debemos de darnos cuenta que el contenedor tenga el width: 100%. y la grid también ocupe el width: 100%.
+
+  - localCompare compara de forma local con acentos, así compara á con á true sin usar el localComppare sería á = a true
