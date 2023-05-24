@@ -1,0 +1,91 @@
+!!! CONTEXT !!!.- Esto nos sirve oara evitar el prop driling en React, el propdriling es lo que comunmente hacemos en React, de pasar de componente en componente los props hasta llegar al componente donde lo necesita aunque los otros componentes no lo necesiten. El contexto es una forma donde nosotros podemos crear lógica dentro, luego servimos o proveemos ese contexto y tenemos que envolver los componentes que queremos con ese contexto para poder hacer uso del mismo. Este estado lo tiene el contexto y el que quiera lo va a poder leer sin necesidad de psarle las props de componente en componente. Con esto desacomplamos directamente toda la lógica en una parte totalemnte separada y además que cualquier que lo necesite lo puede leer de ese lugar. El contexto es algo que está totalmente separado de nuestro árbol de componentes que se puede leer de una forma separada, entonces tenemos 3 paso:
+
+- Crear el contexto. (Crear)
+- Servir el provider del contexto. (Proveer)
+- Envolver nuestros componentes o App principal con el provider. (Consumir).
+
+ejm filters.jsx
+// crear
+import { createContext } from 'react'
+export const FiltersContext = createContext()
+
+// Proveer => aqui podemos tener estados, lógica controlada aquí, porque, porque el contexto como está fuera del componente vamos a tener un solo estado de este contexto y su estado se vaa compartir así tendremos un estado global.
+
+export const FiltersProvider = ({ children }) => {
+  return (
+    <FiltersContext.Provider value={{ 
+        category: 'all',
+        minPrice: '0'
+    }}>
+      {children}
+    </FiltersContext.Provider>
+  )
+}
+
+// consumir (useContext) => el filters tendrá lo que le pasamos en el value al provider.
+useFilters.js
+const filters = useContext(FiltersContext)
+
+En React debemos de tener una sola fuente de la verdad siempre, porque aveces tenemos un estado local y un global, porque no sabemos de cual fiarnos, porque podemos nosotros podemos tener el estado global iniciado en 100 y el global iniciamos en cero y no tiene confianza nuestra UI. ====> ejm
+
+// dos fuentes de la verdad
+export function Filters () {
+  const { setFilters } = useFilters() => estado global 
+  const [minPrice, setMinPrice] = useState(0) => estado local
+  const minPriceFilterId = useId()
+  const categoryFilterId = useId()
+
+
+  const handleChange = (e) => {
+    // dos fuentes de la verdad
+    setMinPrice(e.target.value)
+    setFilters(prevState => ({ => cambiando el estado global.
+      ...prevState,
+      minPrice: e.target.value
+    }))
+  }
+
+  const handleChangeCategory = (e) => {
+    setFilters(prevState => ({
+      ...prevState,
+      category: e.target.value
+    }))
+  }
+  ....
+  
+
+// una fuente de la verdad nos fiamos del estado global así siemore será el mismo en toda la app.
+
+export function Filters () {
+  const { filters, setFilters } = useFilters()
+  const minPriceFilterId = useId()
+  const categoryFilterId = useId()
+
+  const handleChange = (e) => {
+    setFilters(prevState => ({
+      ...prevState,
+      minPrice: e.target.value
+    }))
+  }
+
+  const handleChangeCategory = (e) => {
+    setFilters(prevState => ({
+      ...prevState,
+      category: e.target.value
+    }))
+  }
+
+  return (
+    <section className='filters'>
+      <div>
+        <label htmlFor={minPriceFilterId}>Price</label>
+        <input
+          onChange={handleChange}
+          type='range'
+          id={minPriceFilterId}
+          min='0'
+          max='1000'
+          value={filters.minPrice}
+        />
+        <span>${filters.minPrice}</span>
+      </div>
