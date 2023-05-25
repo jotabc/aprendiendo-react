@@ -50,7 +50,7 @@
   scale: 1.1;
 }
 
-.cart-button~input:checked~.cart {
+.cart-button ~ input:checked ~ .cart {
   height: 100%;
   display: block;
 }

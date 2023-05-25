@@ -89,3 +89,44 @@ export function Filters () {
         />
         <span>${filters.minPrice}</span>
       </div>
+
+** Una buena práctica que se usa mucho en los contexttos es verificar si dicho contexto que ha leído es undefined, si es undefined quiere decir normalmente qeue estamos usando este hook en un lugar que no podemos, porque una parte de mi aplicación no está envuelta en un Provider.
+
+import { useContext } from 'react'
+import { CartContext } from '../context/cart'
+
+export function useCart () {
+  const context = useContext(CartContext)
+  if (context === undefined) { => control undefined
+    throw new Error('useCart muste be used within a CartProvider')
+  }
+  return context
+}
+
+La lógica de añadir un producto a un cart de compras es que debemos primero chequear si el producto está dentro del carrito depende si está por ejm podemos sumarle uno a la cantidad para que sume la cantidad antes que agregue otro producto igual y si no tenemos ese producto pues lo añadimos. ====> EJM 
+
+const addToCart = product => {
+  // check if the product is already in the cart
+  const productInCart = cart.findIndex(item => item.id === product.id)
+
+  if (productInCart > 0) {
+    // structreClone hace copias profundas de un array u objetos.
+    const newCart = structuredClone(cart)
+    // sumamo al quantity uno si el producto nuevo tiene ese index productCart
+    newCart[productInCart].quantity += 1
+    // retornamos el nuevo estado.
+    return setCart(newCart)
+  }
+
+  // si el product no está en el carrito
+  setCart(prevState => ([
+    // agregamos todo lo que ya tenía
+    ...prevState,
+
+    {
+    // agregamos el nuevo producto con el ... le pasamos todo el producto todo todo, y colocamos el auqntity en 1
+      ...product,
+      quantity: 1
+    }
+  ]))
+}

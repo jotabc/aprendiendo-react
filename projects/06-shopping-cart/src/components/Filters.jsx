@@ -42,7 +42,7 @@ export function Filters () {
         <select id={categoryFilterId} onChange={handleChangeCategory}>
           <option value='all'>All</option>
           <option value='laptops'>Laptops</option>
-          <option value='smartphoes'>Smartphones</option>
+          <option value='smartphones'>Smartphones</option>
         </select>
       </div>
     </section>
