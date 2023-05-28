@@ -1,0 +1,7 @@
+- Como buena práctica debemos de colocar en navegaciones a otras páginas un anchor <a></a>, no un botón
+  * Con el botón perdemos accesibilidad, es decir google no rastrea las página porque no son links de navegacion si no para el es un botón más.
+  * Cuando nosotros usamos el botón cuando damos click derecho no obtenemos, abrir en otra pestaña copiar dirección de un enlace, cuando hacemos Ctrl + click no se abre en una nueva pestaña, cuando hacemos Mayus + click tampoco se abre en una nueva ventana.
+
+- porque esto => <a onClick={handleClick} href={to} target={target} {...props} /> soporta un children sin la necesidad de pasarle como prop encerrado..?. Esto es porque nosotros al pasarle las {...props} le estamos pasando todas las props que soporta el anchor, porque funciona el children, porque estamos haciendo <a ... children={props.children} /> que equivale a lo mismo que pasarle encerrado <a>{props.children}</a>.
+
+- 
