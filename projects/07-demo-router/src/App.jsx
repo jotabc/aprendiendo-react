@@ -1,4 +1,4 @@
-import { Router } from './pages'
+import { Router } from './Router'
 import { routes } from './routes'
 
 function App () {

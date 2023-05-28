@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react'
-import { EVENTS } from '../../const'
+import { EVENTS } from '../const'
 
 export function Router ({ routes = [], defaultComponent: DefaultComponent = () => null }) {
   const [currentPath, setCurrentPath] = useState(window.location.pathname)
