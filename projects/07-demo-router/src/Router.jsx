@@ -1,8 +1,8 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useState, Children } from 'react'
 import { EVENTS } from '../const'
 import { match } from 'path-to-regexp'
 
-export function Router ({ routes = [], defaultComponent: DefaultComponent = () => null }) {
+export function Router ({ children, routes = [], defaultComponent: DefaultComponent = () => null }) {
   const [currentPath, setCurrentPath] = useState(window.location.pathname)
 
   useEffect(() => {
@@ -22,7 +22,18 @@ export function Router ({ routes = [], defaultComponent: DefaultComponent = () =
   }, [])
   let routesParams = {}
 
-  const Page = routes.find(({ path }) => {
+  // add routes of children <Route /> Component
+  const routesFromChildren = Children.map(children, ({ props, type }) => {
+    const { name } = type
+    const isRoute = name === 'Route'
+
+    if (!isRoute) return null
+    return props
+  }).filter(Boolean)
+
+  const routesToUse = routes.concat(routesFromChildren)
+
+  const Page = routesToUse.find(({ path }) => {
     if (path === currentPath) return true
     // usamos match de path-to-regexp para poder detectar las rutas dinámicas
     const matchedUrl = match(path, { decode: decodeURIComponent })
