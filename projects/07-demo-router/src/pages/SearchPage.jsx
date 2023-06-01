@@ -1,5 +1,7 @@
 import { useEffect } from 'react'
 
+console.log('SearchPage.jsx')
+
 export function SearchPage ({ routesParams }) {
   useEffect(() => {
     document.title = `Has buscado ${routesParams.query}`

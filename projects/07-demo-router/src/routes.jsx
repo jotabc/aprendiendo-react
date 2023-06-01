@@ -1,17 +1,20 @@
-import { AboutPage, HomePage } from './pages'
-import { SearchPage } from './pages/SearchPage'
+import React from 'react'
+
+const LazyAboutPage = React.lazy(
+  () => import('./pages/AboutPage.jsx').then(module => ({ default: module.AboutPage }))
+)
+
+const LazyHomePage = React.lazy(
+  () => import('./pages/HomePage.jsx').then(module => ({ default: module.HomePage }))
+)
 
 export const routes = [
   {
     path: '/',
-    Component: HomePage
+    Component: LazyHomePage
   },
   {
     path: '/about',
-    Component: AboutPage
-  },
-  {
-    path: '/search/:query',
-    Component: SearchPage
+    Component: LazyAboutPage
   }
 ]

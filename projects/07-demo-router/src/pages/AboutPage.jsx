@@ -1,5 +1,6 @@
 import { Link } from '../components'
 
+console.log('About.jsx')
 export function AboutPage () {
   return (
     <>
