@@ -1,14 +1,15 @@
 import { useEffect, useState, Children } from 'react'
 import { EVENTS } from '../const'
 import { match } from 'path-to-regexp'
+import { getCurrentPath } from './utils'
 
 export function Router ({ children, routes = [], defaultComponent: DefaultComponent = () => null }) {
-  const [currentPath, setCurrentPath] = useState(window.location.pathname)
+  const [currentPath, setCurrentPath] = useState(getCurrentPath())
 
   useEffect(() => {
     // una buena práctica es siempre crear la función para el listener porque así nos seguramos que donde le pasemos siempre tenga la misma referencia y es una forma que podemos asegurarnos que le quitamos el evento después.
     const onLocationChange = () => {
-      setCurrentPath(window.location.pathname)
+      setCurrentPath(getCurrentPath())
     }
     // pushstate evento que escucha la navegación para adelante con la flecha de navegador.
     window.addEventListener(EVENTS.PUSHSTATE, onLocationChange)
@@ -29,9 +30,13 @@ export function Router ({ children, routes = [], defaultComponent: DefaultCompon
 
     if (!isRoute) return null
     return props
-  }).filter(Boolean)
+  })
 
-  const routesToUse = routes.concat(routesFromChildren)
+  const routesToUse = routes.concat(routesFromChildren).filter(Boolean)
+
+  if (routesToUse.length === 0) {
+    return <DefaultComponent />
+  }
 
   const Page = routesToUse.find(({ path }) => {
     if (path === currentPath) return true
