@@ -1,4 +1,4 @@
-import { Link } from '../components'
+import { Link } from '../Link'
 import { useI18n } from '../hooks/useI18n'
 
 console.log('About.jsx')

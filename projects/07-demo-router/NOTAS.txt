@@ -4,4 +4,5 @@
 
 - porque esto => <a onClick={handleClick} href={to} target={target} {...props} /> soporta un children sin la necesidad de pasarle como prop encerrado..?. Esto es porque nosotros al pasarle las {...props} le estamos pasando todas las props que soporta el anchor, porque funciona el children, porque estamos haciendo <a ... children={props.children} /> que equivale a lo mismo que pasarle encerrado <a>{props.children}</a>.
 
-- 
+- npm login inicia session en npm
+- npm publish este publica el paquete siempre que queremos subir algun tipo de cambio en el package.json podemos cambiar la versión en package.json/version: "0.0.1"

@@ -1,4 +1,4 @@
-import { Link } from '../components'
+import { Link } from '../Link'
 import image from '../assets/404.avif'
 
 export function Page404 () {

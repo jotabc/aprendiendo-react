@@ -1,4 +1,4 @@
-import { BUTTON, EVENTS } from '../../const'
+import { BUTTON, EVENTS } from './const'
 
 export function navigate (href) {
   window.history.pushState({}, '', href) // => esto hace que no se refresque cuando vamos a otra página.

@@ -1,8 +1,8 @@
 import React, { Suspense } from 'react'
-import { Route } from '../Route'
 import { Router } from './Router'
 import { Page404 } from './pages/Page404'
 import { routes } from './routes'
+import { Route } from './Route'
 
 const LazySearchPage = React.lazy(
   () => import('./pages/SearchPage.jsx').then(module => ({ default: module.SearchPage }))
