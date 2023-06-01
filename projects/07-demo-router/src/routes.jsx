@@ -14,7 +14,7 @@ export const routes = [
     Component: LazyHomePage
   },
   {
-    path: '/about',
+    path: '/:lang/about',
     Component: LazyAboutPage
   }
 ]
