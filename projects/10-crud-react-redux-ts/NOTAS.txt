@@ -1,0 +1,166 @@
+!!! REDUX TOOLKIT !!!.- Redux Toolkit el paquete está destinado a ser la forma estándar de escribir Redux lógica.
+
+Las cosas más importantes que necesitamos para trabajar con redux, aunque es un cponcepto que vamos a necesitar en un montón de gestores de estado global:
+
+1) El store donde se guardan las cosas, donde lo guradamos todo, reducers, estado, actions. ESete es el sitio donde pasa la magia, donde vamos a guardar nuestra parte del estado, donde se sabe como tiene que gestionar este estado. Para poder usar redux tenemos que nuestra app envolver con un provider.
+
+    main.tsx
+    ...
+    import { store } from './store'
+    import { Provider } from 'react-redux'
+
+    const root = createRoot(...)
+    root.render(
+        <Provider store={store}>
+            <App />
+            ...other components if any
+        </Provider>
+    ) => Esto nos permitirá que ahora desde cualquier parte de nuestra app podamos leer la store y mandar acciones a la store para que genere nuevos estados.
+
+    store/index.ts
+    import { configureStore } from "@reduxjs/toolkit";
+
+    export const store = configureStore({
+        reducer: {}, 
+    });
+    => podemos dejarlo en vacío hasta verificar que reducers tendrá nuestra app,este es el que va a recibir todos los reducers.
+
+
+    Dentro del store, que tenemos varia información debemos de ser nosotros ordenados, osea podemos tener usuarios , busquedas, post, productos etc, entonces esta caja(store) vamos a querer ser organizados, para organizarnos nosotros vamos a querer dividir está en diff secciones y cada sección la vamos a llamar slice, vamos a tener diff porciones donde una porción puede ser usuarios, otra productos etc etc.
+
+2) Creamos los slice que son trozos de nuestro store. En los slices el estado inicia puede ser cualquier cosa, un array, objeto hasta un string. Obviamente en la vida real el estado inicial debería ser vacío, porque no tiene usuarios de principio. Una vez que ya obtenemos el estado inicial, ya podemos hacer opeaciones, y estas operaciones serán las que podamos ponder en los reducers.
+Luego de esto debemos de exportar el reducer, que viene o sale de nuestro slices creado ejm:
+    store/users/slice.ts => usersSlice
+    ...rest of code
+    export default usersSlice.reducer => este es el reducer que exportamos de nuestro slice para poder usarlo en nuestra store.
+
+3) Lo primero que vamos a querer hacer es leer el store de los usuarios. En nuestro store lo que debemos de hacer es importar el userReducer que exportamos de nuestro slice ejm
+
+    import { configureStore } from "@reduxjs/toolkit";
+    import usersReducer from "./users/slice";
+
+    export const store = configureStore({
+        reducer: {
+            users: usersReducer,
+        },
+    }); 
+    Con esto ya tendríamos nuestro store preparado para los usuarios por el momento.
+
+    Ahora vamos a leer la store en donde queremos en este caso en ListOfUsers.jsx ejm
+
+    export function ListOfUsers() {
+        const users = useSelector((state) => state.users);
+            ... rest of code
+
+            users.map(...etc)
+            porque state.users, este nombre es el que nosotros colocamos en el store en los reducers, siempre tienen que llevar el mismo nombre que va en la store cuando accedemos al estado.
+
+            export const store = configureStore({
+            reducer: {
+                users: usersReducer, => este nobre users colocado aqui es el que accedemos despues.
+            },
+        });
+    }
+4) TIPAR EL STORE.-  esto primer paso va en el store.ts
+    4.1) export type RootState = ReturnType<typeof store.getState>
+    Con esto le estamos diciendo que de la funcion store.getState, el tipo que deuelva es el que devuelve la función en este caso users. Así automaticamente detecta el type UserWithStore que tipamos.
+    Es decir obtenemos el tipo que retorna la función. Esto lo hacemos una vez y suficiente.
+
+    4.2) Debemos de crear un dos hooks personalizados, para nuestro useSelector y el useDispatch, para no usar los useSelector y useDispatch que nos ofrece react-redux, porque así evitamos de siempre en donde vayamos a usar nuestros reducers estar tipandolos a cada rato con esto conceguimos "sobreescribir" los hooks useSelector y useDispacth con nuevas funciones donde en estas le pasamos nosotros el type ts que necesita y será de manera global donde usemos nuestras funciones custom ya tendrá el tipado por defector sin necesidad de tipar cada vez que requerimos el estado. ejm 
+
+    hooks/store.ts
+    import type { TypedUseSelectorHook } from "react-redux";
+    import { useDispatch, useSelector } from "react-redux";
+    import type { AppDispatch, RootState } from "../store";
+
+    export const useAppSelector: TypedUseSelectorHook<RootState> = useSelector;
+    export const useAppDispatch: () => AppDispatch = useDispatch;
+    Con esto evitamos los imports useelector de react-redux, esto es un rollo, porque etsmoa teniendo una dependecnia muy bestia en nuestros componentes, y nuestra app petará si por a o b razón queremos nosotros cambiarnos a zustan por ejm, con esto hacemos un abstraccion donde podamos cambiar de redux a zustan sea fácil y trasnparente.
+
+    4.3) usamos nuestros hooks personalizados
+
+    ListOfUsers.tsx
+    import { useAppSelector } from './hooks/store.ts
+
+    const users = useSelector((state) => state.users); antes sin tipado
+    const users = useAppSelector((state) => state.users);
+
+    Como buena práctica debemos tipar de esta manera redux de forma global o automatica, así es como piden en la documentación.
+
+5) Crear nuestros acciones dentro de nuestra slice en este caso de usuarios ejm:
+    export const usersSlice = createSlice({
+	name: "users",
+	initialState,
+	reducers: {
+		deleteUserById: (state, action: PayloadAction<UserId>) => {
+			const id = action.payload;
+			return state.filter((user) => user.id !== id);
+		},
+	}
+    });
+    Como vemos aqui dentro de este reducers van las acciones de los slices.
+
+6) Debemos de exportar nuestra accion directo desde el slice, lo que nos evita esto es usar el string que usa redux para cada acciones y solo lo importamos como modulo, porque en redux teniamos que hacer lo sig.
+
+Con ReduxToolkit podemos exportar la acción directp desde nuestros slice ejm =>
+// REDUX: 'DELETE_USER_BY_ID' acordarnos del string.
+// REDUX TOOLKIT usersSlice.ts al final del documento.
+    export const { deleteUserById } = usersSlice.actions
+
+7) Usar esa acción exportada con dispatch tipado que creamos cuando tipamos redux de forma global
+ListOfUSers.tsx
+import { useAppDispacth } from './hooks/store
+
+function ListOfUser (){
+    const dispacth = useAppDispacth() => recuperamos e dispacth
+
+    const handleRemoveUser = (id: UseId) => {
+        dispatch(deleteUserById(id)) > deleteUserById accio que creaos en nuestro slice.
+    }
+
+    ...
+
+    return (
+        users.map(...resto of code
+        <button onClick={() => handleRemoveUser(item.id)}>Eliinar usuario</button>
+    )
+}
+
+8) perisitir los datos
+
+Una buena práctica sería que nosotros tengamos un hook o un archivo donde podamos nosotros meter la lógica de nuestras acciones de cada slice, por ejm aquí no creamos nosotros la lógica en la carpeta hooks/useUserActions que aqui será donde nosotros metamos toda esa lógica como remover, editar, crear un usuario etc etc y asi evitaremos encadenar nuestros componentes con redux, es decir, para no estar en cada componentes colocando useDispatch y así estamos obligando a nuestro componente de usar redux, en cambio con un customHook dentro la lógica primero evitamos mucho código innecesario en nuestros componentes porque el no debe saber que usamos para nuestras acciones, 2 fácil limpieza si por A o B motivo nosotros quitamos redux de nuestra app etc etc. ejm =>
+    hooks/useUsersActions.ts
+    export function useUsersActions() {
+	const dispatch = useAppDispatch();
+
+	const removeUser = (id: UserId) => {
+		dispatch(deleteUserById(id));
+	};
+
+	return { removeUser };
+}
+
+La estructura de carpetas depende mucho de nuestra lógica de negocio, es decir, como nosotros queramos, pero un buena práctica es seguir mejor la arquitectura ScreamingArchitecture, en donde deberíamos ser capaces de anteponer la logica o lo más importante de nuestro sistema, por ejm nuestro sistema es mas importante los usuarios que redux, porque sin redux pordemos usar la app pero sin usuarios no podemos usar ni escalar nuestra app, por eso un ejm claro sería colocar la sig estructura:
+    src
+      users
+        components
+        store => slices
+        hooks
+    y así a la hora de cambiar tecnologías sería mucho más fácil. porque si hacemos la estructura como strore y dentro todo lo posible tendríamos la arquitectura en el primer nivel, cuando es más importante en nuesta app los usuarios que el mismo redux o store.
+
+    car-rental
+        cars
+            models
+            rent
+            controllers => otro ejm sacado de ScreamingArchitecture
+        customers
+            create
+                controller
+                serializer
+    Se le llama ScreamingArcitecture porque lo que hace literalmente es gritar, porque nos está gritando lo que utiliza nuestra negocio.  
+
+
+
+FLOW.- En el store nosotros tenemos el estado, y todos reducers, la store tiene los recuers que son los que se encargan de transformar el estado. por ejm tengo en el estado 10 dolarés, el usuario en la UI le d click en pagar por ejm, el eventHandler(dispatch) lo que hace es enviar la acción al store, al store llega a un reducer, y este reducer genera un nuevo estado y esta nuevo estado va a la interfaz y asi es un ciclo rotativo infinito. y siempre va en una sola dirección.
+
+REDUCERS.- Dentro de la store los reducers recuperan el estado, y con la acción que le ha llegado y con el estado que tiene en ese momento va a calcular el nuevo estado.
