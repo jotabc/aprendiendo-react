@@ -164,3 +164,81 @@ La estructura de carpetas depende mucho de nuestra lógica de negocio, es decir,
 FLOW.- En el store nosotros tenemos el estado, y todos reducers, la store tiene los recuers que son los que se encargan de transformar el estado. por ejm tengo en el estado 10 dolarés, el usuario en la UI le d click en pagar por ejm, el eventHandler(dispatch) lo que hace es enviar la acción al store, al store llega a un reducer, y este reducer genera un nuevo estado y esta nuevo estado va a la interfaz y asi es un ciclo rotativo infinito. y siempre va en una sola dirección.
 
 REDUCERS.- Dentro de la store los reducers recuperan el estado, y con la acción que le ha llegado y con el estado que tiene en ese momento va a calcular el nuevo estado.
+
+! MIDDLEWARE !.- Es algo que se ejecuta a mitad de algo, es casi como un proxy, es decir, vamos a capturar un momento concreto. Un middleaware lo que nos va a permitir es capturar cada vez que se hace dispatch ver lo que esta haciendo, poder esperar a que termine eso y una vez aue tengamos el nuevo estado hacer algo también con eso.
+Esto lo que nos permite es cambiar la funcionalidad que esta haceindo nuestra app de una forma trasparente sin necesidad de meter nada en las funciones de nuetsra lógica o reducers. Lo tenemos que crear en nuestra stroe en este caso userStore.ts.
+
+Un middleware es una función que recupera el store, que devuelve una function que recupera un metodo next, que tiene que devolver una function que recupera un método action.
+
+const middleware = (store) => (next) => (action) => { ...code }
+Porque hace esto, porque como está en diff puntos lo que vamos a querer es poder leer la store, pero también vamos a querer llamar el reducer para que actualice nuestro estado, vamos a querer tener una forma de ejecutar una función para que pueda ir al sig paso. Por eso tenemos una función que devuelve una función que devuelve una función porque le estamos inyectando en cada uno de los pasos diff información, por un lado la store, por un lado la forma de ir a la sig (next), por otro lado la action.
+Esto se coloca asi (store) => (next) => (action), por que en realidad cada pasito sucede en un momento distinto, no es que se está ejecutando uno a la vez, sino que se está ejecutando cada función que está devolviendo en una parte diff de forma interna, por eso es que necesita 3 funciones, y que en cada función devuelve inyecta información que puede en ese instante.
+
+ejm simple useStore.ts
+    const persistanceMiddleware = (store) => (next) => (action) => {
+        console.log(store.getState()); => cosas a reaizar justo antes que se actualice el estado.
+        console.log(action);
+        next(action); => sig paso
+        console.log(store.getState()); => cosas a realizar justo después que se actualizar el estado.
+    };
+
+    export const store = configureStore({
+        reducer: {
+            users: usersReducer,
+        },
+        middleware: [persistanceMiddleware]
+    });
+
+Ya vemos que podemos nosotros realizar algo justo antes de actualizar el estado y justo despúes de actuaizar el estado, podemos validar datos, podriamos enviar un peticion asincrona para validar datos, recuperar datos antes y despues. ejm
+
+const persistanceLocalStorageMiddleware = (store) => (next) => (action) => {
+	next(action);
+	window.localStorage.setItem(
+		"__redux__state__",
+		JSON.stringify(store.getState()),
+	);
+}; En este ejm estamos persistiendo la informacion en el localStorage despues de actualizar el estado, osea, despues de tener el estado inicil, luego de haberse ejecutado alguna accion que actualizo mi estado ahí recien persito los datos.
+Pero tenemos que leer en este caso dichos state para que poder leer el estado que ya cambio en ese momento ejm => userSlice.ts
+
+const DEFAULT_STATE = [
+	{
+		id: "1",
+		email: "peter@gmail.com",
+		github: "haakon",
+		name: "Peter Doe",
+	},
+	{
+		id: "2",
+		email: "jonhdow@gmail.com",
+		github: "leo",
+		name: "John Doe",
+	},
+	{
+		id: "3",
+		name: "Juan Lopez",
+		email: "juan@gmail.com",
+		github: "mdo",
+	},
+];
+
+    // UNA FORMA DE HACERLO
+    let initialState: UserWithId[] = DEFAULT_STATE
+	const persistedState = window.localStorage.getItem("__redux__state__");
+        if (persistedState) {
+            initialState = JSON.parse(persistedState).users;
+        }
+
+    // MEJOR FORMA DE HACERLO USANDO IIFE
+    const initialState: UserWithId[] = (() => {
+        const persistedState = window.localStorage.getItem("__redux__state__");
+            if (persistedState) {
+                return JSON.parse(persistedState).users;
+            }
+
+            return DEFAULT_STATE;
+    })();
+
+    
+
+    Como vemos en nuestro slice cambiamos un poco el initialState, donde aquí estamos leyendo nosotros el estado de nuestro store almacenado en el localStorage. Porque usamos una función autoinvocable autoejecutable, porque lo que esta haciendo el return uno de los dos el return JSON.parse(persistedState).users o el return del DEFAULT_STATE. Es una forma mucho más bonita, y mejor vista es una nuena razón para usar un IIFE(Immediately Invoked Function Expression), Como es una expresion lo que hace es devolver el valor de una si necesodad de sobreescrbirlo.
+    Así incluso nos evitamos de los nombres de las constantes se son repetidas, al crear la closure esta al nivel de la funcion closure todas la variables.
