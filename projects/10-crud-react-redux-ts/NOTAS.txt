@@ -242,3 +242,11 @@ const DEFAULT_STATE = [
 
     Como vemos en nuestro slice cambiamos un poco el initialState, donde aquí estamos leyendo nosotros el estado de nuestro store almacenado en el localStorage. Porque usamos una función autoinvocable autoejecutable, porque lo que esta haciendo el return uno de los dos el return JSON.parse(persistedState).users o el return del DEFAULT_STATE. Es una forma mucho más bonita, y mejor vista es una nuena razón para usar un IIFE(Immediately Invoked Function Expression), Como es una expresion lo que hace es devolver el valor de una si necesodad de sobreescrbirlo.
     Así incluso nos evitamos de los nombres de las constantes se son repetidas, al crear la closure esta al nivel de la funcion closure todas la variables.
+
+!!! sync db !!!.- Podemos trabajar con lo que se conoce como actualizacion optimista, es decir, que somos muy optimistas que todo va a ir bien y funcionar y que le vamos a dar la impresión la usuario que ha funcionado, pero si no funciona lo que vamos ha hacer visualmente es hacer un rollback. Asi trabaja Facebook y Twitter. 
+Osea lo intenta pero si va o da error lo quita.
+
+Podemos instalar sonner para las notificaciones.
+
+Una de las ventajas de redux toolkit muy interesantes, es que no tenemos que generar un nuevo estado, si no que podemos modificar mutar el original y directamente devolver el estado mutado sin necesidad de por ejm decir, (devuelvo todo lo que tenía antes + lo nuevo que envio), con toolkit hacemos es (devolver el nuevo state). Podemos hacer los push por ejm en nuestros arrays (ver ejm en userSlice.ts). Podemos mutar el estado redux toolkit, porque por detrás usa IMMER, IMMER es una herramienta que lo que hace es que podamos hacer actualizaciones inmutables. Esto está dentro de los reducers y todo. Aunque tiene un coste, es decir, redux toolkit ocupe algo y en temas de reendimiento tiene su impacto.
+Si no usamos redux-toolkit, no podemos nosotros mutar directamente el state.

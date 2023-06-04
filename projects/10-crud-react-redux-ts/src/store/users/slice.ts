@@ -46,14 +46,24 @@ export const usersSlice = createSlice({
 		addNewUser: (state, action: PayloadAction<User>) => {
 			const id = crypto.randomUUID();
 			// lo que se hace normalmente en redux, es crear un nuevo estado a partir del anterior.
-			return [...state, { id, ...action.payload }];
+			// return [...state, { id, ...action.payload }];
+			state.push({ id, ...action.payload });
 		},
 		deleteUserById: (state, action: PayloadAction<UserId>) => {
 			const id = action.payload;
 			return state.filter((user) => user.id !== id);
 		},
+		// UI optimista
+		rollbackUser: (state, action: PayloadAction<UserWithId>) => {
+			const isUserAlreadyDefined = state.some(
+				(user) => user.id === action.payload.id,
+			);
+			if (!isUserAlreadyDefined) {
+				state.push(action.payload);
+			}
+		},
 	},
 });
 
 export default usersSlice.reducer;
-export const { addNewUser, deleteUserById } = usersSlice.actions;
+export const { addNewUser, deleteUserById, rollbackUser } = usersSlice.actions;
