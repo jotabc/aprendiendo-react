@@ -1,3 +1,4 @@
+import { CreateNewUser } from "./components/CreateNewUser";
 import { ListOfUsers } from "./components/ListOfUsers";
 
 export function App() {
@@ -7,6 +8,7 @@ export function App() {
 				React + Redux Toolkit Crud
 			</h1>
 			<ListOfUsers />
+			<CreateNewUser />
 		</>
 	);
 }
