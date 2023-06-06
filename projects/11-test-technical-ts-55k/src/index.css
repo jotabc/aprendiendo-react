@@ -21,4 +21,25 @@ button {
   color: #fff;
   padding: 10px;
   border-radius: 8px;
+  margin-right: 8px;
+}
+
+.table-show-colors tr:nth-child(2n) {
+  background-color: #333;
+}
+
+.table-show-colors tr:nth-child(2n + 1) {
+  background-color: #555;
+}
+
+/* .table-show-colors tr:nth-child(odd) {
+  background-color: #333; odd => par
+}
+
+.table-show-colors tr:nth-child(even) {
+  background-color: #555; even => impar
+} */
+
+.pointer {
+  cursor: crosshair
 }

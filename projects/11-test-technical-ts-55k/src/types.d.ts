@@ -1,3 +1,9 @@
+declare global {
+  interface Array<T> {
+    toSorted(compareFn?: (a: T, b: T) => number): T[]
+  }
+}
+
 export interface Info {
   seed: string;
   results: number;
@@ -75,4 +81,11 @@ export interface User {
   id: ID;
   picture: Picture;
   nat: string;
+}
+
+export enum SortBy {
+  none = 'none',
+  name = 'name',
+  last = 'last',
+  country = 'country'
 }

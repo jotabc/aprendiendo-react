@@ -1,0 +1,45 @@
+Método sort.- El metodo sort debemos de tener presente nosotros que este sort siempr muta el array original, por lo que para un filtro de sort debemos nosotros de asegurarnos de hacer una copia del array orginal a sortear para que me devuelva el correcto ejm =>
+
+// INCORRECTO
+const sortedUsers = sortByCountry
+    ? users.sort((a, b) => {
+        return a.location.country.localeCompare(b.location.country)
+      })
+    : users
+
+// CORRECTO
+const sortedUsers = sortByCountry
+? [...users].sort((a, b) => {
+    return a.location.country.localeCompare(b.location.country)
+    })
+: users
+
+// CORRECTO => Este es un nuevo método de array del toSorted, aunque no esta disponible entods los navegadores. Con toSorted le indicamos que queremos hacer la copia, el toSorted hace exactamente lo mismo que el sort pero devuelve un nuevo array.
+
+const sortedUsers = sortByCountry
+? users.toSorted((a, b) => {
+    return a.location.country.localeCompare(b.location.country)
+    })
+: users
+
+Para ts podemos nosotros tipar o mejor dicho hacer un generico global de ts, porque nos da un error de tipo que toSorted no existe en el tipo tal. Lomque podemos hacer es saber como siquiera extender los prototipos de array, lo podemos hacer en el archivos de types que estemos usando por ejm aquí estamos usando los users, podríamos hacerlo dentro del archivo de types de los usuarios. ejm =>
+
+declare global {
+    interface Array<T> {
+        toSorted(compareFn?: (a: T, b: T) => number): T[]
+    }
+}
+
+Explicación .-  
+    - declare global.- extendemos el interface de array de ts.
+    - interface Array<T> estamos usando la interfaz de Array.
+    - Aqui dentro de colocamos lo sig:
+      - toSorted - nombre de la función a extender.
+      - compareFn - sería la funcion a comparar porque toSorted es una función.
+      - (a: T, b: T) - Estos son los parámetros que recibe la función toSorted, que sería a y b, el :T significa de tipo generico este recibirá el tipo que tenga actualmente lo que estamos usando, es decir, si nosotros queremos usar este método para sortear usuarios por país el T será el interface user y así según sea usado.
+
+      - => number sería lo que retorna la función, en este caso es un numero 1 o -1 dependiendo el sorteado.
+      - : T[] - esto significa que devuelve un array de tipo génerico (el tipo que se está usando actualmentr, puede ser users, products etc.) 
+
+
+useRef.- Sirve para guardar un valor que se comparta entre reenderizados, pero que al cambiar no vuelva a reenderizar el estado.
