@@ -1,7 +1,7 @@
 body {
   margin: 0;
   display: flex;
-  place-items: center;
+  justify-content: center;
   min-width: 320px;
   min-height: 100vh;
   background-color: #202b38;
@@ -19,9 +19,10 @@ body {
 button {
   background-color: dimgray;
   color: #fff;
-  padding: 10px;
-  border-radius: 8px;
-  margin-right: 8px;
+  padding: 0.5rem;
+  border-radius: 0.5rem;
+  margin-right: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .table-show-colors tr:nth-child(2n) {

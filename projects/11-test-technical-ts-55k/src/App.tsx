@@ -3,11 +3,24 @@ import { UsersList } from './components/UsersList'
 import { SortBy, type User } from './types.d'
 import { API_USERS } from './consts'
 
+const fetchUsers = async (page: number) => {
+  return await fetch(`${API_USERS}&page=${page}`)
+    .then(async res => {
+    // forma correcta de manejar los errores cuando usamos fetch
+      if (!res.ok) throw new Error('Error en la petición')
+      return await res.json()
+    })
+    .then(res => res.results)
+}
+
 export function App () {
   const [users, setUsers] = useState<User[]>([])
   const [showColors, setShowColors] = useState(false)
   const [sorting, setSorting] = useState<SortBy>(SortBy.none)
   const [filterCountry, setFilterCountry] = useState<string | null>(null)
+  const [loading, setLoading] = useState<boolean>(false)
+  const [error, setError] = useState<boolean>(false)
+  const [currentPage, setCurrentPage] = useState<number>(1)
 
   const originalUsers = useRef<User[]>([])
   // useRef -> para guardar un valor
@@ -37,16 +50,26 @@ export function App () {
   }
 
   useEffect(() => {
-    fetch(API_USERS)
-      .then(async res => await res.json())
-      .then(res => {
-        setUsers(res.results)
-        originalUsers.current = res.results
+    setLoading(true)
+    setError(false)
+
+    fetchUsers(currentPage)
+      .then(users => {
+        setUsers(prevState => {
+          const newUsers = prevState.concat(users)
+          originalUsers.current = users
+          return newUsers
+        })
       })
       .catch(err => {
+        // no sirve el error en el catch en el fetch si no tenemos un torw new error declarado arriba.
+        setError(err)
         console.error(err)
       })
-  }, [])
+      .finally(() => {
+        setLoading(false)
+      })
+  }, [currentPage])
 
   const filteredUsers = useMemo(() => {
     return filterCountry != null && filterCountry.length > 0
@@ -71,24 +94,9 @@ export function App () {
     })
   }, [filteredUsers, sorting])
 
-  // const filteredUsers = (() => {
-  //   console.log('calculate filteredUsers')
-  //   return filterCountry != null && filterCountry.length > 0
-  //     ? users.filter(user => {
-  //       return user.location.country.toLowerCase().includes(filterCountry.toLowerCase())
-  //     })
-  //     : users
-  // })()
-
-  // const sortedUsers = (() => {
-  //   console.log('calculate sortedUsers')
-
-  //   return sortByCountry
-  //     ? filteredUsers.toSorted(
-  //       (a, b) => a.location.country.localeCompare(b.location.country)
-  //     )
-  //     : filteredUsers
-  // })()
+  const handlePagination = () => {
+    setCurrentPage(prevState => prevState + 1)
+  }
 
   return (
     <div className='App'>
@@ -111,10 +119,26 @@ export function App () {
             setFilterCountry(e.target.value)
           }}
         />
-
       </header>
       <main>
-        <UsersList changeSorting={handleChangeSort} deleteUser={handleDelete} showColors={showColors} users={sortedUsers} />
+        {users.length > 0 && (
+          <UsersList
+            changeSorting={handleChangeSort}
+            deleteUser={handleDelete}
+            showColors={showColors}
+            users={sortedUsers}
+          />
+        )}
+        {loading && <p>Cargando...</p>}
+        {!loading && error && <p>Hubo un error</p>}
+        {!loading && !error && users.length === 0 && <p>No hay usuarios</p>}
+        {!loading && !error && (
+          <button
+            onClick={handlePagination}
+          >
+            Cargar más resultados
+          </button>
+        )}
       </main>
     </div>
   )
