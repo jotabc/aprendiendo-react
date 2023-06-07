@@ -17,5 +17,5 @@ Los pasos a seguir:
 - [x] Avoid sorting users again the data when the user is changing filter by country.
 - [x] Sort by clicking on the column header.
 - [x] Pagination
-- [] Use React Query.
-- [] Infinite scroll.
+- [x] Use React Query.
+- [x] Infinite scroll.

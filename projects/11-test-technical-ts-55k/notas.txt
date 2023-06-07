@@ -43,3 +43,35 @@ Explicación .-
 
 
 useRef.- Sirve para guardar un valor que se comparta entre reenderizados, pero que al cambiar no vuelva a reenderizar el estado.
+
+!!! TanStack Query !!!.- Es una biblioteca para manejo y administración de estados asíncronos. Esto hace que podamos eliminar mucho el uso de redux, porque nos da un estado global, persistencia, nos da facilidad de evitar hacer llamadas asíncronas 2 veces. Es una biblioteca que se puede usar en cualquier Framework, como React, Vue, Svelte etc.
+
+Install: pnpm add @tanstack/react-query -E
+
+Uso:
+  1) Al tener un estado global necesitamos un provider, lo hacemos e nuestro punto de entrada main.tsx.
+    Tenemos que envolver nuestra app con el provider y pasarle el client, está sería la config básica para empezar a usarlo.
+    main.tsx
+    import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+
+    const queryClient = new QueryClient()
+
+    ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
+    <QueryClientProvider client={queryClient}>
+        <App />
+    </QueryClientProvider>
+    )
+
+  2) Donde la vamos a usar tenemos que importar el hook useQuery, que este recibe dos parámetros, el primero un arry de keys que se usa para reconocerlo, en este ejm estamos haciendo users pues usaremos esa key para reconocer esa parte del estado, aunque podemos pasarle, mas keys, como por ejemplo page, filtros de busqueda etc solo cuando tenga sentido, el segundo parámetro sería la forma en que queremos que traiga la peticion, es una funcion asíncrona que le decimos como traiga la información la petición, que puede ser una función o un servicio ejm
+
+    const { isLoading, isError, data: users = [], refetch } = useQuery<User[]>(
+        ['users'], // <- key de la información o query
+        async () => await fetchUsers(1) // <- como tiene que traer la información
+    )
+
+    Esto lo que nos permite es eliminar el useEffect para hacer las peticiones a una API, si usamos react-query, para las peticiones fetch nos evita el uso del useEffect, porque el useQuery en el segunda parámetro que le estamos pasando este ya hace la peticion asíncrona por nosotros.
+
+
+  3) Tiene otro hooks que nos permite hacer una páginación infinita llamado useInfiniteQuery ver ejm en hooks/useUsers.ts
+
+  Con esto tenemos nosotos un estado global donde podemos nosotros solo acceder al hook que creamos y a los usuarios, y toda la información que queremos nosotros obtener, podemos compartir la información donde queremos.
