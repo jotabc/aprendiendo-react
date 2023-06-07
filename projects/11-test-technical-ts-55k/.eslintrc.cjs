@@ -11,6 +11,7 @@ module.exports = {
   rules: {
     '@typescript-eslint/explicit-function-return-type': 'off',
     'react/react-in-jsx-scope': 'off',
-    '@typescript-eslint/method-signature-style': 'off'
+    '@typescript-eslint/method-signature-style': 'off',
+    '@typescript-eslint/no-explicit-any': 'off'
   }
 }
