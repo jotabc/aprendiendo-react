@@ -1,0 +1,72 @@
+!!! ZUSTAND !!!.- Es una alternativa a redux es mucho mas sencillo, es un manejador de estados globales pensado especialmente para React.
+
+Cual es la diff de redux y zustand?.- 
+
+-REDUX TOOLKIT:
+  Desventajas
+  - Tiene mucho boilerplate, tenemos que muchas veces repetir   acciones para lograr un mismo objetivo.
+
+  - Ocupa 20kb más o ménos.
+  - Complicado para principiantes.
+  - Mucho códig para pequeños cambios.
+  - Muchos conceptos y opinionado(opinion del frameqork, tienen una opinion que te obligan a seguirla para poder utilizarlo.
+  - Podemos usar redux para proyectos medianos pero tampoco poco grandes.
+
+  Positivo
+    - Mutabilidad por defecto.
+
+-ZUSTAND:
+  Ventajas
+  - Muy simple, tan simple que no tiene configuracion nu provider
+  - Ocupa 1,1kb.
+  - No está opinionado.
+  - Se usaría siempre que se pueda porque, porque, es muy sencillo escala muy bien, y puede serpararlo al infinito de una forma muy comoda.
+  - Zustand siempre actualiza el estado como si lo estuviese extendiendo cosa de que si nosotros tenemos mas de un estado no es necesario hacer ...state para taernos todo lo que tenia.
+
+  Desventajas:
+  -Hay que hacer mutabilidad.
+  - No lo usariamos para app muy grandes y para todo el estado global
+  - Con zustand no es necesario envolver con nada nuestra app para poder tener un estado global, lo unico que hace falta es crear un archivo con el nombre que sea y crear la función que vamos a usar por ejm un contador con zustand ejm:
+
+    store-zustand.js
+    import create from 'zustand'
+
+    export const useCounterStore = crear((set) => ({
+        // state
+        count: 0
+        // "actions" o funciones a realizarse para que el estado cambie
+        increment: () => {
+            set((state) => ({ count: state.count + 1 }))         
+        }
+        decrement: () => {
+            set((state) => ({ count: state.count - 1 }))         
+        },
+        increaseBtValue: (value) => {
+            set((state) => ({ count: state.count + value }))         
+        }
+    }))
+
+    ejm de zustand
+
+Cuando podemos usar el React.Context
+ Para estados que cambian poco o nada, como por ejm estado del usuario, el tema de web claro u obscuro. y evitar el prop driling.
+
+Una cosa que tiene zustand es que cuando nosotros creamos la por ejm este customHopok de useCounterStore para usarlo en un component, en zustand para evitar rereenderizados devemos de sacar las "actions" que creamos en nuestro custom hook por separado ejm:
+
+ const count = useCounterStore(state => state.count) 
+ const increment = useCounterStore(state => state.increment) etc con esto le decimos que tiene que sacar del estado.
+
+Podemos hacerlo de otra manera que funciona tambien con destruccturacón ejm :
+const [
+  count,
+  increent,
+  decrement
+ ] = useCounterStore((state) => [
+   state.count,
+   state.increment,
+   state.decrement
+ ])
+
+y se ejecutaria funciones por ejm el increment directo onclick(increment) no como tenemos que usar el dispatch tambein y ejecutar eso en el onClick={() => dispatch(increment())}
+
+ 
