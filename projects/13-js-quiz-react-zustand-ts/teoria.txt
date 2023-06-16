@@ -69,4 +69,28 @@ const [
 
 y se ejecutaria funciones por ejm el increment directo onclick(increment) no como tenemos que usar el dispatch tambein y ejecutar eso en el onClick={() => dispatch(increment())}
 
- 
+! ZUSTAND !.- Como constuir un estado global y pasos a seguir de como trabajar con zustand:
+
+1) Instalamos
+   - pnpm add zustand -E
+
+2) Luego podemos crear un carpeta store dentro de src y ese será nuestro estado global como redux más o ménos. ver ejm src/store/questions.ts ejm
+    export const useQuestionStore = create<State>((set, get) => {
+    return {
+      questions: [],
+      currentQuestions: 0,
+      fetchQuetions: async (limit: number) => {
+        console.log('questions')
+      }
+    }
+    Explain => creamos un customHook usequestionStore en este caso, luego este create recibe un callback este a su vez recibe un parametro set, que es el encargado de actualizar nuestro estado, luego este callback devuelve un objeto que será el estado global, no solo tendremos solo el estado si no también las formas de actualizar el estado
+
+    La prop get en cambio con el podemos leer el estado.
+})
+
+3) Como obtenemos ese estado global ejm App.tsx, lo que tenemos que hacer es llamar a nuestro hook que creamos useQuetionStore, y sacamos de ahí nuestro estado en la función ejm:
+
+const questions = useQuestionStore(state => state.questions) 
+como vemos aqui el useQuestionStore recibe una función en la cual nos devuelve el statdo solo tenemos que acceder a que estado queremos obtener en este caso questions, si queremos otro estado pues hacemos lo mismo 
+
+const currentQuestion = useQuestionStore(state => state.currentQuestion) 
