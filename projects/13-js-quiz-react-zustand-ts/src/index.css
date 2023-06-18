@@ -1,9 +1,9 @@
-body {
-  font-family: system-ui;
-  padding: 10px;
+body { 
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-content: center;
+  font-family: system-ui;
   background-color: #232323;
   color: #fff;
+  padding: 16px;
 }

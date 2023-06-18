@@ -8,8 +8,6 @@ import { Game } from './pages/Game'
 export function App () {
   const questions = useQuestionStore(state => state.questions)
 
-  console.log(questions)
-
   return (
     <main>
       <Container maxWidth='md'>
