@@ -94,3 +94,38 @@ const questions = useQuestionStore(state => state.questions)
 como vemos aqui el useQuestionStore recibe una función en la cual nos devuelve el statdo solo tenemos que acceder a que estado queremos obtener en este caso questions, si queremos otro estado pues hacemos lo mismo 
 
 const currentQuestion = useQuestionStore(state => state.currentQuestion) 
+
+Cons zustand también podemos nosotros crear los middlewares que queremos.
+Para poder hacer persistencia de datos por ejm aqui nosotros vamos a persisitir lo que el usuario a respondido de las peguntas en nuestro localStorage:
+
+1) En nuestro store importamos persist, este persist lo que hace es capturar todos los cambios que queremos hacer en la store y lo sincroniza con el localStore, sessionStorogae, lo sincroniza con lo que queramos.
+  - import { persist } from 'zustand/middleware'
+
+2) en nuestra store en el hook que se crea tenemos que envolver todo este hook con el persist
+    const useQuestionsStore = create(persist((set, get) => {
+      return {
+        funciones: ...
+        funciones: ...
+        funciones: ...
+      }
+    }))
+
+3) Debemos de darle un nombre a esa persistencia por si queremos persistir varias store
+   const useQuestionsStore = create(persist((set, get) => {
+      return {
+        funciones: ...
+        funciones: ...
+        funciones: ...
+      }
+    }, {
+      name: 'questions',
+      getStorage: () => localStorage => aqui indicamos donde queremos guardar donde cumpla la API por defecto usa el localstorage
+    }))
+
+4) Podemos usar también las deftools, que es igual un middleware y envolvemos nuestro hook o store con esto
+   - import { persist } from 'zustand/middleware'
+
+   Podemos incluso nombrar nuestras acciones porque por defecto nos da anonymos la devtools colocando en el set un nombre específico ejm
+
+   ...
+   set({ questions: newQuestions}, false, 'FETCH_QUESTIONS')
