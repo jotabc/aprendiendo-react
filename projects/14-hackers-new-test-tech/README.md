@@ -1,10 +1,10 @@
 # Enunciado
 
 ## Requirements:
-[] Use a Styled Components/CSS-in-JS solution of your choice
+[x] Use a Styled Components/CSS-in-JS solution of your choice
 [] Show placeholder/skeleton for stories and comments while loading
 [] Respect list item indentation for comments
-[] Each page should have a unique URL (ex. localhost:8080/article/12121). It should be a SPA but all URLs should be accesible by direct link.
+[x] Each page should have a unique URL (ex. localhost:8080/article/12121). It should be a SPA but all URLs should be accesible by direct link.
 
 ## Instructions:
 
