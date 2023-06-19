@@ -2,13 +2,13 @@
 
 ## Requirements:
 [x] Use a Styled Components/CSS-in-JS solution of your choice
-[] Show placeholder/skeleton for stories and comments while loading
+[x] Show placeholder/skeleton for stories and comments while loading
 [] Respect list item indentation for comments
 [x] Each page should have a unique URL (ex. localhost:8080/article/12121). It should be a SPA but all URLs should be accesible by direct link.
 
 ## Instructions:
 
-[] Write a React or React Native app that fetches and displays the top 10 stories from Hacker News using the Hacker News API - https://github.com/HackerNews/API 
+[x] Write a React or React Native app that fetches and displays the top 10 stories from Hacker News using the Hacker News API - https://github.com/HackerNews/API 
 
 [] If you click into a story, you should see the comments in a different page.
 Fetch and display the first 10 comments and their children using the Hacker News API.
