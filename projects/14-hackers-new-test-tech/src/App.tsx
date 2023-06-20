@@ -1,12 +1,15 @@
 import { Header } from './components/Header'
 import { Route } from 'wouter'
-import { Suspense, lazy } from 'react'
+import { Suspense, lazy, useEffect } from 'react'
 
 const TopStoriesPage = lazy(() => import('./pages/TopStories'))
 
 const DetailPage = lazy(() => import('./pages/Detail'))
 
 export function App () {
+  useEffect(() => {
+    document.title = 'Hacker News Technical Test USA'
+  }, [])
   return (
     <>
       <Header />
