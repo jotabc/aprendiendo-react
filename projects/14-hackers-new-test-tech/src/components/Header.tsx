@@ -1,5 +1,6 @@
 import { header, link, img } from './Haeder.css'
 import logo from '../assets/logo.svg'
+import { Link } from 'wouter'
 
 export function Header () {
   return (
@@ -10,7 +11,7 @@ export function Header () {
           src={logo}
           alt='Logo de Hacker New'
         />
-        <a className={link}>Hacker News</a>
+        <Link href='/' className={link}>Hacker News</Link>
       </nav>
     </header>
   )

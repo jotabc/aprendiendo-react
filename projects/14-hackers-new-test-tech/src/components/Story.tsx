@@ -9,6 +9,7 @@ import {
   storyTitle
 } from './Story.css'
 import { StoryLoader } from './StoryLoader'
+import { getRelativeTime } from '../utils/getRelativeTime'
 
 export function Story (
   props: {
@@ -23,7 +24,7 @@ export function Story (
     return <StoryLoader />
   }
 
-  const { by, kids, score, title, url } = data
+  const { by, kids, score, title, url, time } = data
 
   let domain = ''
 
@@ -34,6 +35,7 @@ export function Story (
   }
 
   // TODO: create relativeTime
+  const relativeTime = getRelativeTime(time)
 
   return (
     <article className={story}>
@@ -68,7 +70,10 @@ export function Story (
           className={storyLink}
           href={`/article/${id}`}
         >
-          6 hours ago
+          <time dateTime={new Date(time * 1000).toLocaleDateString()}>
+            {relativeTime}
+
+          </time>
         </Link>
         <Link
           className={storyLink}
