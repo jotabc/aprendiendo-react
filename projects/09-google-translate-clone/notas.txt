@@ -1,0 +1,33 @@
+reducers.- Un reducer recibe dos parametros el estadoInicial, y la accion. Con el dispatch le pasamos la informacion, cuando esto le llega al reducer, el entiende que queremos cambiar el estado, este genera un nuevo estado, y este nuevo estado sería volver a reenderizar en nuestro componente, cada vez que cambia reenderiza nuestros componentes.
+
+En pocas palabras, cada vez que tenemos una nueva acción crear un nuevo estado para que reenderice nuestro componente.
+Pasos para crear este paso a paso:
+
+1.- Crear el estado inicial
+2.- Crear el reducer. Que este recibe el state y el action. Aqui es donde nosotros debemos de generar la lógica de lo que queremos que contenga cada action para que cambie nuestro estado. Un reducer siempre tiene que devolver un nuevo estado, si no devuelve nada tenemos que retorna el state que esta recibiendo siempre siempre tiene que devolver un estado.
+
+3.- En nuestros componentes usar el hook de react useReducer, donde este recibe la función reductora y el estado inicial. Este nos devuelve como vimos el state que sería todo nuestro estado inicial que creamos y el dispatch que es el encargado de disparar nuestras funciones. Aquí nosotros debemos de hacer los dispatch de las acciones para que nuestro estado cmabie y podamos generar ese nuevo estado que cambie nuestros componentes.
+
+EJM
+// paso 1
+const initialState: State = {
+  fromLanguage: 'auto',
+  toLanguage: 'en',
+  fromText: '',
+  result: '',
+  loading: false
+}
+
+// paso 2
+function reducer (state: State, action: Action) {
+  
+  // todas la acciones que queremos que tenga nuestro reducer
+  if (type === 'INTERCHANGE_LANGUAGES') {
+    ...code
+  }
+}
+
+// paso 3
+const [state, dispatch] = useReducer(reducer, initialState)
+
+Nosotros como buena practica es no dejar que nuestros componentes usen el reducer de react, es decir, debemos de ser capaces de crear las funciones que cambian ese estado y exportarlas, nuestros componentes no pueden usar los dispatch  porque estamos atando nuestros componentes a usar el reducer cuando debería de ser un contrato aparte.
