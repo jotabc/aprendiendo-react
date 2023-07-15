@@ -31,6 +31,7 @@ export const TextArea: FC<Props> = ({ loading, value, onChange, type }) => {
       autoFocus={type === SectionType.From}
       as='textarea'
       onChange={handleChange}
+      disabled={type === SectionType.To}
       placeholder={getPlaceHolder({ type, loading })}
       style={styles}
       value={value}

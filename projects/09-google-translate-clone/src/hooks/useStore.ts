@@ -42,9 +42,11 @@ function reducer (state: State, action: Action) {
   }
 
   if (type === 'SET_FROM_TEXT') {
+    const loading = action.payload !== ''
+
     return {
       ...state,
-      loading: true,
+      loading,
       fromText: action.payload,
       result: ''
     }
@@ -53,7 +55,7 @@ function reducer (state: State, action: Action) {
   if (type === 'SET_RESULT') {
     return {
       ...state,
-      loading: true,
+      loading: false,
       result: action.payload
     }
   }
