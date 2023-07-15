@@ -31,3 +31,10 @@ function reducer (state: State, action: Action) {
 const [state, dispatch] = useReducer(reducer, initialState)
 
 Nosotros como buena practica es no dejar que nuestros componentes usen el reducer de react, es decir, debemos de ser capaces de crear las funciones que cambian ese estado y exportarlas, nuestros componentes no pueden usar los dispatch  porque estamos atando nuestros componentes a usar el reducer cuando debería de ser un contrato aparte.
+
+TIPADOS.-
+export type Language = keyof typeof SUPPORTED_LANGUAGES
+export type AutoLanguage = typeof AUTO_LANGUAGE
+export type FromLanguage = Language | AutoLanguage
+
+Que quiere decir el typeof y el keyof?.- En TS el typeof en este caso SUPPORTED_LANGUAGES, le decimos copiate el contrato de ese objeto y con las keyof le decimos quedate con las keys de ese objeto. Al ser un objeto tiene clave(key) valor(value) entonces así podemos extender los tipos y evitamos crear más de una vez.
